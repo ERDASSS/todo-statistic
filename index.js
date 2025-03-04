@@ -5,6 +5,7 @@ const files = getFiles();
 
 console.log('Please, write your command!');
 readLine(processCommand);
+//processCommand('user veronika');
 
 function getFiles() {
     const filePaths = getAllFilePathsWithExtension(process.cwd(), 'js');
@@ -12,22 +13,35 @@ function getFiles() {
 }
 
 function processCommand(command) {
-    switch (command) {
+    const commandSplit = command.split(' ');
+    const TODOs = getTODOComments(getFiles());
+    switch (commandSplit[0]) {
         case 'exit':
             process.exit(0);
             break;
         case 'show':
-            const ans = getTODOComments(getFiles());
-            console.log(ans)
+            console.log(TODOs)
             break;
         case 'important':
-            const TODOs = getTODOComments(getFiles());
             const importantTODO = [];
             for (const str of TODOs){
-                if (str.at(-1) === '!')
+                if (str.at(-2) === '!')
                     importantTODO.push(str);
             }
-            console.log(importantTODO)
+            console.log(importantTODO);
+            break;
+
+        case 'user':
+            const strToFind = `TODO ${commandSplit[1]}`
+            const TODOWithUsers = [];
+            for (const str of TODOs) {
+                if (str.toLowerCase().includes(strToFind.toLowerCase())) {
+                    TODOWithUsers.push(str);
+                }
+            }
+            console.log(TODOWithUsers);
+            break;
+
         default:
             console.log('wrong command');
             break;
@@ -41,7 +55,7 @@ function getTODOComments(files) {
         for (const str of code) {
             const split = str.split('//');
 
-            if ((split.length > 1 || str.slice(0, 2) === '//') && split[1].slice(1, 5) == 'TODO') {
+            if ((split.length > 1 || str.slice(0, 2) === '//') && split[1].slice(1, 5) === 'TODO') {
                 arrStr.push('//' + split[1]);
             }
         }
