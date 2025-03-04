@@ -4,7 +4,7 @@ const {readLine} = require('./console');
 const files = getFiles();
 
 console.log('Please, write your command!');
-processCommand('show')
+readLine(processCommand);
 
 function getFiles() {
     const filePaths = getAllFilePathsWithExtension(process.cwd(), 'js');
@@ -20,6 +20,14 @@ function processCommand(command) {
             const ans = getTODOComments(getFiles());
             console.log(ans)
             break;
+        case 'important':
+            const TODOs = getTODOComments(getFiles());
+            const importantTODO = [];
+            for (const str of TODOs){
+                if (str.at(-1) === '!')
+                    importantTODO.push(str);
+            }
+            console.log(importantTODO)
         default:
             console.log('wrong command');
             break;
